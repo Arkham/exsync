@@ -28,8 +28,9 @@ defmodule ExSync.BeamMonitor do
           # :modified, closed event.  By ensuring the modified event arrives on its own,
           # we should be ablle to ensure we reload only once in a cross-platorm friendly way.
           # Note: TODO I don't have a Mac or Windows env to verify this!
-          if [:modified] == events do
+          if :modified in events do
             Logger.info "reload module #{Path.basename(path, ".beam")}"
+            ExSync.Utils.unload path
             ExSync.Utils.reload path
           end
 
@@ -38,9 +39,9 @@ defmodule ExSync.BeamMonitor do
           nil
 
         # remove
-        {_, true, _, false} ->
-          Logger.info("unload module #{Path.basename(path, ".beam")}")
-          ExSync.Utils.unload(path)
+        # {_, true, _, false} ->
+        #   Logger.info("unload module #{Path.basename(path, ".beam")}")
+        #   ExSync.Utils.unload(path)
 
         # create
         _ ->
